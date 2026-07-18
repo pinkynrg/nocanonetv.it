@@ -1,0 +1,17 @@
+Ci siamo, {{name}}.
+
+Da ora ci pensa nocanonetv.it a ricordarti di rinnovare la dichiarazione di non
+detenzione dell'apparecchio TV, così eviti l'addebito del canone RAI in bolletta.
+
+Ogni anno, nella finestra utile (dicembre -> 31 gennaio), ti scriviamo una mail.
+Ti chiederemo se sei ANCORA senza TV e, se lo confermi, ti manderemo dritto al
+canale ufficiale dell'Agenzia delle Entrate per presentarla.
+
+Importante: la dichiarazione la presenti sempre tu. nocanonetv.it non la compila e non la
+invia al posto tuo — è una tua autocertificazione.
+
+Pagina ufficiale dell'Agenzia delle Entrate:
+{{official_url}}
+
+Non vuoi più ricevere il promemoria? Annulla qui:
+{{unsubscribe_url}}

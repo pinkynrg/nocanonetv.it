@@ -1,0 +1,16 @@
+Ecco come fare, {{name}}.
+
+Il tuo caso di esonero dal canone TV è una tantum: lo presenti una volta sola e,
+finché la tua situazione non cambia, NON va rinnovato ogni anno.
+
+Presenta la dichiarazione sul canale ufficiale dell'Agenzia delle Entrate. La
+firmi e la invii tu: nocanonetv.it non la compila né la trasmette al posto tuo.
+
+Sito ufficiale dell'Agenzia delle Entrate:
+{{official_url}}
+
+Dato che il tuo caso non richiede un rinnovo annuale, non ti manderemo promemoria
+ogni anno. Se la tua situazione cambia, ricordati di aggiornare la dichiarazione.
+
+Non vuoi più ricevere nostre email? Annulla qui:
+{{unsubscribe_url}}

@@ -1,0 +1,17 @@
+È ora di rinnovare, {{name}}.
+
+La dichiarazione di non detenzione dell'apparecchio TV vale un solo anno e va
+ripresentata per il {{year}}.
+
+Prima di tutto: sei ancora senza apparecchio TV?
+
+{{deadline_note}}
+
+Conferma e prosegui qui (poi ti mandiamo al canale ufficiale dell'Agenzia):
+{{confirm_url}}
+
+Hai preso una TV nel frattempo? Aprilo dallo stesso link: ti spieghiamo cosa
+fare e ti togliamo dai promemoria.
+
+Non vuoi più ricevere il promemoria? Annulla qui:
+{{unsubscribe_url}}
