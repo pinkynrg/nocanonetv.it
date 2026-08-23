@@ -26,6 +26,12 @@ Reminder for the Italian TV licence ("canone TV") non-detention declaration, plu
 - `make migrate` — apply Alembic migrations.
 - `make make_migrations name=<name>` — generate a migration.
 - `make send_reminders args="--dry-run"` — send reminders (window-aware, not a daemon).
+- `make demo` — re-record the README demo (needs `make start` running in another terminal).
+
+## Demo
+- `demo/record.mjs` drives a real browser through the whole arc and writes `docs/media/nocanonetv-demo.{gif,mp4}` plus a poster frame. The mp4 and the poster are also what francescomeli.com embeds, so refresh the copies there after a re-record.
+- It runs against the **real stack**, not fixtures: the confirm and reminder links carry tokens minted by the API and by `send_reminders`, and faking them would film something the product does not do. `demo/demo_db.py` forgets the demo subscriber before each take and reads those tokens out of the database, which is what makes the tape repeatable.
+- Viewport 1440x900 (16:10), to match the other demos on francescomeli.com; the gif is 720 wide, the mp4 1100. `playwright` is pinned to an exact version so a re-record uses the browser build the tape was written against.
 
 ## Scheduling
 - In production the `cron` service in `docker-compose.yml` runs the backend image under **supercronic** (`TZ=Europe/Rome`) with the schedule in `crontab`: months `12,1` (full-year, 31 Jan deadline) and `5,6` (2nd-semester fallback, 30 Jun deadline).

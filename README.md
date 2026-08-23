@@ -7,6 +7,8 @@ the charge on their electricity bill. For non-detention the declaration must be 
 year**: nocanonetv.it reminds you within the useful window. You always file and sign the
 declaration yourself on the official Agenzia delle Entrate site.
 
+![Picking an exemption case, signing up, confirming by email, then answering next December's reminder](docs/media/nocanonetv-demo.gif)
+
 ## Development
 
 - Backend: FastAPI + Postgres in `server/` (uv, Python 3.12).
@@ -17,6 +19,30 @@ make start          # frontend + backend + db
 make migrate        # Alembic migrations
 make send_reminders args="--dry-run"
 ```
+
+## Re-recording the demo
+
+The gif above is generated, not captured by hand, so it can be refreshed
+whenever the UI changes:
+
+```bash
+make start          # in one terminal
+make demo           # in another
+```
+
+`demo/record.mjs` is the tape: it drives a real browser through the whole arc
+(pick a case, sign up, confirm by email, jump to December, answer the reminder)
+and writes `docs/media/nocanonetv-demo.{gif,mp4}` plus a poster frame. The mp4
+and the poster are what francescomeli.com embeds.
+
+It runs against the real stack rather than fixtures, because the two links it
+follows carry tokens minted by the API and by `send_reminders`: faking them
+would film something the product does not do. `demo/demo_db.py` is what keeps
+it repeatable, forgetting the demo subscriber before each take and handing the
+tape the tokens it would otherwise have to read out of an inbox.
+
+First run downloads a browser (`cd demo && npx playwright install chromium`) and
+needs `ffmpeg` and `gifsicle` on PATH.
 
 ## Reminder scheduling (cron)
 

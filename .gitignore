@@ -4,6 +4,7 @@ db_data
 node_modules
 __pycache__
 client/dist
+demo/.recording
 .env
 .venv
 *.pyc
