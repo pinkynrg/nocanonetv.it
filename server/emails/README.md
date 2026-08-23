@@ -4,9 +4,13 @@ Each email is a pair of files in this folder:
 
 | Email                                    | HTML                   | Text (fallback)       |
 | ---------------------------------------- | ---------------------- | --------------------- |
+| Confirmation (double opt-in, at signup)  | `confirm.html`         | `confirm.txt`         |
 | Welcome ("no TV" cases, yearly)          | `welcome.html`         | `welcome.txt`         |
 | Welcome (one-off cases, guide)           | `welcome_onetime.html` | `welcome_onetime.txt` |
 | Yearly reminder                          | `reminder.html`        | `reminder.txt`        |
+
+Signup uses **double opt-in**: at signup the `confirm.*` email goes out and the subscriber
+stays `pending`; the `welcome.*` email is sent only after they confirm via the link.
 
 Which welcome is sent depends on the cases chosen at signup: if there is at least one
 non-detention case (`non_detenzione`), `welcome.html` goes out; if they are all one-off
@@ -18,6 +22,10 @@ paste the `{{...}}` merge tags where needed, save under the right name here. No 
 needed — files are re-read on every send.
 
 ## Available placeholders
+
+**confirm.html / confirm.txt** (double opt-in, sent at signup before activation)
+- `{{name}}` — subscriber name
+- `{{confirm_url}}` — link that confirms the subscription
 
 **welcome.html / welcome.txt** and **welcome_onetime.html / welcome_onetime.txt**
 - `{{name}}` — subscriber name

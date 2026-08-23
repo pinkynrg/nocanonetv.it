@@ -41,6 +41,11 @@ def confirm_url(event: ReminderEvent) -> str:
     return f"{_base()}/conferma/{event.token}"
 
 
+def confirm_subscription_url(subscriber: Subscriber) -> str:
+    """Double opt-in link: confirms the subscription itself (not a reminder)."""
+    return f"{_base()}/conferma-iscrizione/{subscriber.confirm_token}"
+
+
 def _render(template_name: str, context: dict[str, str]) -> str:
     text = (_TEMPLATES_DIR / template_name).read_text(encoding="utf-8")
     for key, value in context.items():
@@ -58,7 +63,7 @@ def build_welcome(subscriber: Subscriber) -> EmailMessage:
         }
         return EmailMessage(
             to=subscriber.email,
-            subject="nocanonetv.it — sei iscritto al promemoria del canone TV",
+            subject="nocanonetv.it · sei iscritto al promemoria del canone TV",
             html=_render("welcome.html", context),
             text=_render("welcome.txt", context),
         )
@@ -71,9 +76,24 @@ def build_welcome(subscriber: Subscriber) -> EmailMessage:
     }
     return EmailMessage(
         to=subscriber.email,
-        subject="nocanonetv.it — come ottenere l'esonero dal canone TV",
+        subject="nocanonetv.it · come ottenere l'esonero dal canone TV",
         html=_render("welcome_onetime.html", context),
         text=_render("welcome_onetime.txt", context),
+    )
+
+
+def build_confirm(subscriber: Subscriber) -> EmailMessage:
+    """Double opt-in email: the subscriber must click to confirm the signup."""
+    context = {
+        "name": subscriber.name,
+        "confirm_url": confirm_subscription_url(subscriber),
+        "unsubscribe_url": unsubscribe_url(subscriber),
+    }
+    return EmailMessage(
+        to=subscriber.email,
+        subject="nocanonetv.it · conferma la tua iscrizione",
+        html=_render("confirm.html", context),
+        text=_render("confirm.txt", context),
     )
 
 
@@ -90,7 +110,7 @@ def build_reminder(
     }
     return EmailMessage(
         to=subscriber.email,
-        subject=f"nocanonetv.it — rinnova la dichiarazione canone TV per il {event.year}",
+        subject=f"nocanonetv.it · rinnova la dichiarazione canone TV per il {event.year}",
         html=_render("reminder.html", context),
         text=_render("reminder.txt", context),
     )

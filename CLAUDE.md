@@ -4,7 +4,8 @@ Reminder for the Italian TV licence ("canone TV") non-detention declaration, plu
 
 ## Language
 - **Code, comments, docstrings, logs, commit messages and docs: always English.**
-- **User-facing app copy stays Italian** (site text, emails, API messages shown to users, route slugs like `/conferma` `/annulla`) — the audience is Italian.
+- **User-facing app copy stays Italian** (site text, emails, API messages shown to users, route slugs like `/conferma` `/annulla`): the audience is Italian.
+- **No long dashes (em/en dash `—` `–`) in user-facing copy**: they read as AI-generated. Use `:`, `.`, `,`, a plain hyphen `-`, or the middot `·` as a separator.
 
 ## Commit & PR
 - Commit messages: **one-liner**, describing what the commit does.
@@ -18,6 +19,7 @@ Reminder for the Italian TV licence ("canone TV") non-detention declaration, plu
 ## Product model
 - Reminder only: the user always files and signs the declaration themselves on the official Agenzia delle Entrate site. Always link the official channel, never our own form.
 - 3 exemption cases (`server/cases.py`): `non_detenzione` (yearly → reminder), `over75` and `diplomat` (one-off → initial guidance only).
+- **Double opt-in**: signup creates a `pending` subscriber and sends `confirm.*`; the subscriber becomes `active` (and eligible for reminders) only after clicking the confirm link. Re-subscribing an already-active email re-confirms only if the selected cases changed (otherwise it stays active).
 
 ## Commands
 - `make start` — frontend + backend + db together.

@@ -23,7 +23,8 @@ def _token() -> str:
 
 
 class SubscriberStatus(str, enum.Enum):
-    active = "active"              # no TV: receives the reminders
+    pending = "pending"            # signed up, awaiting email confirmation (double opt-in)
+    active = "active"              # confirmed, no TV: receives the reminders
     exited = "exited"             # declared they now own a TV -> guided exit
     unsubscribed = "unsubscribed"  # cancelled the subscription
 
@@ -46,13 +47,20 @@ class Subscriber(Base):
     # Selected exemption cases (ids from server.cases), e.g. ["non_detenzione", "over75"].
     cases: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     status: Mapped[str] = mapped_column(
-        String(20), nullable=False, default=SubscriberStatus.active.value
+        String(20), nullable=False, default=SubscriberStatus.pending.value
     )
 
     # Opaque token for self-service unsubscribe from the email links.
     unsubscribe_token: Mapped[str] = mapped_column(
         String(64), unique=True, index=True, default=_token
     )
+
+    # Double opt-in: confirmation token (in the confirm email link) and the moment
+    # the subscription was confirmed. confirm_token is null once confirmed.
+    confirm_token: Mapped[str | None] = mapped_column(
+        String(64), unique=True, index=True, default=_token
+    )
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     # --- Evidence trail of the initial self-declaration ---
     # A boolean is not enough: we need who/when/from where/on which exact text.

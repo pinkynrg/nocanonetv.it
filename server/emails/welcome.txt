@@ -8,7 +8,7 @@ Ti chiederemo se sei ANCORA senza TV e, se lo confermi, ti manderemo dritto al
 canale ufficiale dell'Agenzia delle Entrate per presentarla.
 
 Importante: la dichiarazione la presenti sempre tu. nocanonetv.it non la compila e non la
-invia al posto tuo — è una tua autocertificazione.
+invia al posto tuo: è una tua autocertificazione.
 
 Pagina ufficiale dell'Agenzia delle Entrate:
 {{official_url}}

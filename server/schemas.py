@@ -35,6 +35,12 @@ class SubscribeResponse(BaseModel):
     message: str
 
 
+class ConfirmSubscriptionResponse(BaseModel):
+    ok: bool
+    message: str
+    official_url: Optional[str] = None
+
+
 class ReminderContext(BaseModel):
     subscriber_name: str
     year: int

@@ -1,11 +1,16 @@
-import type { JSX } from 'react'
+import type { JSX, ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import styles from './EligibilityCases.module.scss'
 
 export interface CaseInfo {
   id: string
   title: string
-  points: string[]
+  // Whether the points below are ALL required (cumulative) or ANY of them.
+  lead: string
+  points: ReactNode[]
   tag: string
+  // Optional FAQ deep link for the frequency meta line (e.g. "/faq#ogni-quanto").
+  metaHref?: string
   docUrl: string
 }
 
@@ -55,35 +60,44 @@ export const CASES: CaseInfo[] = [
   {
     id: 'non_detenzione',
     title: 'Non detieni una TV',
+    lead: 'Servono tutte queste:',
     points: [
-      'In nessuna delle abitazioni della tua famiglia anagrafica c\'è un televisore, né tuo né di chi vive con te.',
-      'PC, tablet o monitor senza sintonizzatore TV non contano: puoi guardare la TV in streaming e non devi comunque il canone.',
-      'Vale anche se il canone della tua famiglia è già pagato da un altro componente su un\'altra utenza elettrica: tu, intestatario di una seconda utenza, non lo paghi due volte.',
+      'Sei l\'intestatario dell\'utenza elettrica residenziale.',
+      <>
+        Nessun componente della tua famiglia anagrafica detiene un televisore o altro
+        apparecchio con sintonizzatore.{' '}
+        <Link to="/faq#televisore" className={styles.inlineLink} onClick={(e) => e.stopPropagation()}>
+          Cosa conta di preciso?
+        </Link>
+      </>,
     ],
     tag: 'Va confermato ogni anno',
+    metaHref: '/faq#ogni-quanto',
     docUrl:
       'https://www.agenziaentrate.gov.it/portale/aree-tematiche/canone-tv/casi-di-esonero/cittadini-che-non-detengono-tv',
   },
   {
     id: 'over75',
     title: 'Hai più di 75 anni',
+    lead: 'Servono tutte queste:',
     points: [
+      'Sei l\'intestatario dell\'utenza elettrica residenziale.',
       'Hai compiuto 75 anni.',
-      'Il reddito tuo e del coniuge, insieme, non supera 8.000 € l\'anno.',
-      'In casa non vive nessun altro con un proprio reddito (badante e colf non contano).',
-      'Il televisore, se presente, è nella tua residenza.',
+      'Reddito tuo e del coniuge insieme non oltre 8.000 € l\'anno.',
+      'Nessun altro convivente ha un reddito proprio (colf e badanti esclusi).',
     ],
     tag: 'Una tantum · nessun rinnovo',
+    metaHref: '/faq#ogni-quanto',
     docUrl:
       'https://www.agenziaentrate.gov.it/portale/aree-tematiche/canone-tv/casi-di-esonero/ultrasettantacinquenni',
   },
   {
     id: 'diplomat',
     title: 'Diplomatico o militare straniero',
+    lead: 'Servono tutte queste:',
     points: [
-      'Sei un agente diplomatico o consolare.',
-      'Oppure un funzionario di un\'organizzazione internazionale.',
-      'Oppure un militare straniero di stanza in Italia (es. basi NATO).',
+      'Sei l\'intestatario dell\'utenza elettrica residenziale.',
+      'Rientri in una di queste categorie: agente diplomatico o consolare; funzionario di un\'organizzazione internazionale; militare o personale civile straniero delle forze NATO in Italia.',
     ],
     tag: 'Esente per legge',
     docUrl:
@@ -98,7 +112,8 @@ interface Props {
 
 export const EligibilityCases = ({ selected, onToggle }: Props) => (
   <section className={styles.section}>
-    <h2 className={styles.heading}>Seleziona il tuo caso</h2>
+    <h2 className={styles.heading}>Seleziona uno o più casi</h2>
+    <p className={styles.sub}>Tocca quelli che ti riguardano, poi iscriviti qui sotto.</p>
     <div className={styles.grid}>
       {CASES.map((c) => {
         const on = selected.includes(c.id)
@@ -113,30 +128,41 @@ export const EligibilityCases = ({ selected, onToggle }: Props) => (
               checked={on}
               onChange={() => onToggle(c.id)}
             />
-            <span className={styles.check} aria-hidden="true">
-              ✓
-            </span>
             <span className={styles.icon}>
               <CaseIcon id={c.id} />
             </span>
             <h3 className={styles.cardTitle}>{c.title}</h3>
+            {c.metaHref ? (
+              <Link
+                to={c.metaHref}
+                className={styles.metaLink}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {c.tag}
+              </Link>
+            ) : (
+              <p className={styles.meta}>{c.tag}</p>
+            )}
+            <p className={styles.pointsLead}>{c.lead}</p>
             <ul className={styles.points}>
-              {c.points.map((p) => (
-                <li key={p}>{p}</li>
+              {c.points.map((p, i) => (
+                <li key={i}>{p}</li>
               ))}
             </ul>
             <div className={styles.cardFoot}>
               <a
-                className={styles.docLink}
+                className={styles.docChip}
                 href={c.docUrl}
                 target="_blank"
                 rel="noreferrer"
                 onClick={(e) => e.stopPropagation()}
               >
-                Doc. ufficiale ↗
+                Documentazione ufficiale ↗
               </a>
-              <span className={styles.tag}>{c.tag}</span>
             </div>
+            <span className={styles.toggleBtn} aria-hidden="true">
+              {on ? '✓ Selezionato' : 'Seleziona questo caso'}
+            </span>
           </label>
         )
       })}

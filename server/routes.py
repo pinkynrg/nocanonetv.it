@@ -1,4 +1,5 @@
 import logging
+import secrets
 from datetime import date, datetime, UTC
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -7,10 +8,11 @@ from sqlalchemy.orm import Session
 
 from server import get_db
 from server.canone import deadline_note, reference_year
-from server.emails import OFFICIAL_ADE_URL, TEXT_VERSION, build_welcome
+from server.emails import OFFICIAL_ADE_URL, TEXT_VERSION, build_confirm, build_welcome
 from server.email_sender import get_email_sender
 from server.models import ReminderEvent, ReminderResponse, Subscriber, SubscriberStatus
 from server.schemas import (
+    ConfirmSubscriptionResponse,
     ReminderContext,
     RespondRequest,
     RespondResponse,
@@ -44,30 +46,72 @@ def subscribe(payload: SubscribeRequest, request: Request, db: Session = Depends
     ua = request.headers.get("user-agent")
 
     subscriber = db.scalar(select(Subscriber).where(Subscriber.email == email))
+
+    # Already confirmed with the same cases: keep active, just refresh the name.
+    # No re-confirmation needed (nothing consent-relevant changed).
+    if (
+        subscriber is not None
+        and subscriber.status == SubscriberStatus.active.value
+        and set(subscriber.cases) == set(payload.cases)
+    ):
+        subscriber.name = payload.name
+        db.commit()
+        return SubscribeResponse(
+            ok=True,
+            message="Sei già iscritto e confermato con questi casi. Non devi fare altro.",
+        )
+
+    # New signup, non-active subscriber, or a change of cases: (re)start double
+    # opt-in. The subscription is NOT active until confirmed via the email link.
     if subscriber is None:
         subscriber = Subscriber(name=payload.name, email=email)
         db.add(subscriber)
 
-    # Signup or re-activation: always refresh the self-declaration trace.
     subscriber.name = payload.name
-    subscriber.status = SubscriberStatus.active.value
+    subscriber.status = SubscriberStatus.pending.value
     subscriber.initial_attestation = True
     subscriber.cases = payload.cases
     subscriber.attestation_text_version = TEXT_VERSION
     subscriber.signup_ip = ip
     subscriber.signup_user_agent = ua
+    subscriber.confirm_token = secrets.token_urlsafe(32)
+    subscriber.confirmed_at = None
 
     db.commit()
     db.refresh(subscriber)
 
     try:
-        get_email_sender().send(build_welcome(subscriber))
+        get_email_sender().send(build_confirm(subscriber))
     except Exception:  # signup stays valid even if the email fails
-        logger.exception("Welcome email send failed for %s", subscriber.email)
+        logger.exception("Confirmation email send failed for %s", subscriber.email)
 
     return SubscribeResponse(
         ok=True,
-        message="Iscrizione confermata. Ti abbiamo mandato una mail di conferma.",
+        message="Controlla la tua email e clicca il link per confermare l'iscrizione.",
+    )
+
+
+@router.post("/subscribe/confirm/{token}", response_model=ConfirmSubscriptionResponse)
+def confirm_subscription(token: str, db: Session = Depends(get_db)):
+    subscriber = db.scalar(select(Subscriber).where(Subscriber.confirm_token == token))
+    if subscriber is None:
+        raise HTTPException(status_code=404, detail="Link di conferma non valido o già usato.")
+
+    # Double opt-in complete: activate and consume the single-use token.
+    subscriber.status = SubscriberStatus.active.value
+    subscriber.confirmed_at = datetime.now(UTC)
+    subscriber.confirm_token = None
+    db.commit()
+
+    try:
+        get_email_sender().send(build_welcome(subscriber))
+    except Exception:  # confirmation stays valid even if the welcome email fails
+        logger.exception("Welcome email send failed for %s", subscriber.email)
+
+    return ConfirmSubscriptionResponse(
+        ok=True,
+        message="Iscrizione confermata. Ti scriveremo il promemoria nella finestra utile.",
+        official_url=OFFICIAL_ADE_URL,
     )
 
 
@@ -117,7 +161,7 @@ def reminder_respond(
         subscriber.status = SubscriberStatus.active.value
         message = (
             "Perfetto. Presenta ora la dichiarazione sul canale ufficiale dell'Agenzia "
-            "delle Entrate — ricorda: la firmi e la invii tu."
+            "delle Entrate. Ricorda: la firmi e la invii tu."
         )
         official_url = OFFICIAL_ADE_URL
 

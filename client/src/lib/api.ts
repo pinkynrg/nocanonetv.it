@@ -26,6 +26,12 @@ export interface RespondResponse {
   message: string
 }
 
+export interface ConfirmSubscriptionResponse {
+  ok: boolean
+  message: string
+  official_url: string | null
+}
+
 export interface UnsubscribeContext {
   email: string
   status: string
@@ -39,6 +45,11 @@ export interface UnsubscribeResponse {
 export const subscribe = (name: string, email: string, cases: string[]) =>
   api
     .post<SubscribeResponse>('/subscribe', { name, email, cases })
+    .then((r) => r.data)
+
+export const confirmSubscription = (token: string) =>
+  api
+    .post<ConfirmSubscriptionResponse>(`/subscribe/confirm/${token}`)
     .then((r) => r.data)
 
 export const getReminder = (token: string) =>

@@ -40,6 +40,15 @@ body,
 
 body {
   background: var(--bg);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+// Keep form fields selectable/editable.
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 a {

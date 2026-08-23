@@ -171,6 +171,50 @@
   color: var(--danger);
 }
 
+.errorBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  animation: errShake 0.4s ease;
+}
+
+.errorIcon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--danger);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+@keyframes errShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
+
 .officialLink {
   display: inline-flex;
   align-items: center;
@@ -187,15 +231,6 @@
   &:hover {
     background: var(--brand-strong);
   }
-}
-
-.eyebrow {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--brand);
-  margin: 0;
 }
 
 .fullWidth {
@@ -224,4 +259,89 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.faq {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.faqHead {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faqItem {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 2px 16px;
+  transition: border-color 0.15s ease;
+
+  &[data-open='true'] {
+    border-color: var(--brand-border);
+  }
+
+  &[data-flash='true'] {
+    animation: faqFlash 0.7s ease 2;
+  }
+}
+
+@keyframes faqFlash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(42, 77, 143, 0);
+  }
+  35% {
+    box-shadow: 0 0 0 3px rgba(42, 77, 143, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(42, 77, 143, 0);
+  }
+}
+
+.faqQ {
+  cursor: pointer;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 13px 0;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  &::after {
+    content: '+';
+    color: var(--brand);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  &[aria-expanded='true']::after {
+    content: '−';
+  }
+}
+
+.faqA {
+  padding: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #57534e;
 }

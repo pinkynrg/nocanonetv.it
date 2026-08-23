@@ -1,0 +1,9 @@
+Ci siamo quasi, {{name}}.
+
+Per completare l'iscrizione al promemoria del canone TV, conferma che questo
+indirizzo email è tuo. Basta un clic:
+
+{{confirm_url}}
+
+Se non hai richiesto tu l'iscrizione, ignora questa email: senza conferma non
+ti scriveremo più.

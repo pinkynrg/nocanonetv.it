@@ -20,7 +20,7 @@ export const PrivacyPage = () => (
 
       <h2 className={styles.subTitle}>Titolare del trattamento</h2>
       <p className={styles.prose}>
-        WONE di Meli Francesco, impresa individuale — P.IVA IT05375660288, Reggio Emilia
+        WONE di Meli Francesco, impresa individuale · P.IVA IT05375660288, Reggio Emilia
         (Italia). Per qualsiasi richiesta sui tuoi dati scrivi a{' '}
         <a href="mailto:info@nocanonetv.it">info@nocanonetv.it</a>.
       </p>
