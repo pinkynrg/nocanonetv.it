@@ -29,6 +29,11 @@ body,
   min-height: 100vh;
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
 body {
   background: var(--bg);
 }
