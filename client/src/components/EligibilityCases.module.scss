@@ -44,8 +44,8 @@
 }
 
 .selected {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
 }
 
 // native checkbox hidden but accessible
@@ -76,19 +76,19 @@
 }
 
 .selected .check {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-fg);
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
 }
 
 .checkbox:focus-visible + .check {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
 
 .icon {
   display: inline-flex;
-  color: var(--accent);
+  color: var(--brand);
   line-height: 0;
 }
 
@@ -133,9 +133,9 @@
 .tag {
   font-size: 11px;
   font-weight: 600;
-  color: var(--accent);
-  background: var(--bg);
-  border: 1px solid var(--border);
+  color: var(--brand);
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-border);
   border-radius: 999px;
   padding: 4px 10px;
 }

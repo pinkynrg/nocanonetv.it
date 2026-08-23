@@ -48,6 +48,7 @@ export const SubscribePage = () => {
   return (
     <div className={styles.home}>
       <div className={styles.hero}>
+        <p className={styles.eyebrow}>Canone TV · Esonero</p>
         <h1 className={styles.title}>Non pagare il canone RAI, senza dimenticartene</h1>
         <p className={styles.lead}>
           Se va rinnovato ogni anno, te lo ricordiamo noi.

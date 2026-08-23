@@ -21,9 +21,11 @@ const Layout = ({ children }: { children: ReactNode }) => (
     </header>
     <main className={styles.main}>{children}</main>
     <footer className={styles.footer}>
-      nocanonetv.it è solo un promemoria: la dichiarazione la presenti e firmi tu, sul sito
-      dell'Agenzia delle Entrate.
-      <Link to="/privacy" className={styles.footerLink}>Informativa sulla privacy</Link>
+      <div className={styles.footerInner}>
+        nocanonetv.it è solo un promemoria: la dichiarazione la presenti e firmi tu, sul sito
+        dell'Agenzia delle Entrate.
+        <Link to="/privacy" className={styles.footerLink}>Informativa sulla privacy</Link>
+      </div>
     </footer>
   </div>
 )

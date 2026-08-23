@@ -3,6 +3,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(180deg, var(--brand-soft) 0, var(--bg) 260px);
 }
 
 .header {
@@ -42,7 +43,7 @@
 }
 
 .tld {
-  color: var(--muted);
+  color: var(--brand);
   font-weight: 600;
 }
 
@@ -55,11 +56,15 @@
 }
 
 .footer {
-  padding: 12px 24px 16px;
+  padding: 18px 24px;
   text-align: center;
   font-size: 12px;
   line-height: 1.6;
-  color: var(--muted);
+  color: #c3cde4;
+  background: var(--brand-strong);
+}
+
+.footerInner {
   max-width: 560px;
   margin: 0 auto;
 }
@@ -67,6 +72,6 @@
 .footerLink {
   display: block;
   margin-top: 8px;
-  color: var(--muted);
+  color: #ffffff;
   text-decoration: underline;
 }

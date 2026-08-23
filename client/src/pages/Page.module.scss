@@ -177,11 +177,25 @@
   justify-content: center;
   padding: 12px 18px;
   border-radius: var(--radius-sm);
-  background: var(--accent);
-  color: var(--accent-fg);
+  background: var(--brand);
+  color: #fff;
   font-weight: 600;
   font-size: 15px;
   text-decoration: none;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--brand-strong);
+  }
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--brand);
+  margin: 0;
 }
 
 .fullWidth {
