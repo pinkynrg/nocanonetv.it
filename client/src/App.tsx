@@ -12,11 +12,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
     <header className={styles.header}>
       <Link to="/" className={styles.brand} aria-label="nocanonetv.it — home">
         <span className={styles.logo} aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M8 7l4-4 4 4" />
-            <rect x="3" y="7" width="18" height="12" rx="2" />
-            <line x1="4" y1="21" x2="20" y2="4" />
-          </svg>
+          <img src="/logo.png" alt="" width="36" height="36" />
         </span>
         <span className={styles.wordmark}>
           nocanonetv<span className={styles.tld}>.it</span>
