@@ -59,7 +59,7 @@ const CaseIcon = ({ id }: { id: string }) => (
 export const CASES: CaseInfo[] = [
   {
     id: 'non_detenzione',
-    title: 'Non detieni una TV',
+    title: 'Non detieni una TV con sintonizzatore',
     lead: 'Servono tutte queste condizioni:',
     points: [
       'Sei l\'intestatario dell\'utenza elettrica residenziale.',
@@ -71,14 +71,14 @@ export const CASES: CaseInfo[] = [
         </Link>
       </>,
     ],
-    tag: 'Va confermato ogni anno',
+    tag: 'Ti mandiamo il promemoria ogni anno',
     metaHref: '/faq#ogni-quanto',
     docUrl:
       'https://www.agenziaentrate.gov.it/portale/aree-tematiche/canone-tv/casi-di-esonero/cittadini-che-non-detengono-tv',
   },
   {
     id: 'over75',
-    title: 'Hai più di 75 anni',
+    title: 'Hai più di 75 anni con reddito basso',
     lead: 'Servono tutte queste condizioni:',
     points: [
       'Sei l\'intestatario dell\'utenza elettrica residenziale.',
@@ -86,7 +86,7 @@ export const CASES: CaseInfo[] = [
       'Reddito tuo e del coniuge insieme non oltre 8.000 € l\'anno.',
       'Nessun altro convivente ha un reddito proprio (colf e badanti esclusi).',
     ],
-    tag: 'Una tantum · nessun rinnovo',
+    tag: 'Ti mandiamo il promemoria solo una volta',
     metaHref: '/faq#ogni-quanto',
     docUrl:
       'https://www.agenziaentrate.gov.it/portale/aree-tematiche/canone-tv/casi-di-esonero/ultrasettantacinquenni',
@@ -99,7 +99,7 @@ export const CASES: CaseInfo[] = [
       'Sei l\'intestatario dell\'utenza elettrica residenziale.',
       'Rientri in una di queste categorie: agente diplomatico o consolare; funzionario di un\'organizzazione internazionale; militare o personale civile straniero delle forze NATO in Italia.',
     ],
-    tag: 'Una tantum · nessun rinnovo',
+    tag: 'Ti mandiamo il promemoria solo una volta',
     metaHref: '/faq#ogni-quanto',
     docUrl:
       'https://www.agenziaentrate.gov.it/portale/web/guest/aree-tematiche/canone-tv/casi-di-esonero/diplomatici-e-militari-stranieri',
