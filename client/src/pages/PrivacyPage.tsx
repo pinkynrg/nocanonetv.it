@@ -22,7 +22,7 @@ export const PrivacyPage = () => (
       <p className={styles.prose}>
         WONE di Meli Francesco, impresa individuale — P.IVA IT05375660288, Reggio Emilia
         (Italia). Per qualsiasi richiesta sui tuoi dati scrivi a{' '}
-        <a href="mailto:privacy@nocanonetv.it">privacy@nocanonetv.it</a>.
+        <a href="mailto:info@nocanonetv.it">info@nocanonetv.it</a>.
       </p>
 
       <h2 className={styles.subTitle}>Dati che raccogliamo</h2>
@@ -68,7 +68,7 @@ export const PrivacyPage = () => (
         Puoi chiedere accesso, rettifica, cancellazione, limitazione, opposizione e
         portabilità dei tuoi dati, e proporre reclamo al Garante per la protezione dei
         dati personali. Per esercitarli scrivi a{' '}
-        <a href="mailto:privacy@nocanonetv.it">privacy@nocanonetv.it</a> oppure annulla
+        <a href="mailto:info@nocanonetv.it">info@nocanonetv.it</a> oppure annulla
         l'iscrizione dal link presente in ogni email.
       </p>
 

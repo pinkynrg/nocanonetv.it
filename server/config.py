@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     resend_api_key: str = ""
     # Sender. With the Resend sandbox use onboarding@resend.dev (only delivers to
     # the account owner). After verifying the nocanonetv.it domain ->
-    # "nocanonetv.it <noreply@nocanonetv.it>".
+    # "nocanonetv.it <info@nocanonetv.it>".
     email_from: str = "nocanonetv.it <onboarding@resend.dev>"
 
     @property
