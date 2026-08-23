@@ -55,7 +55,7 @@ export const getUnsubscribe = (token: string) =>
 export const unsubscribe = (token: string) =>
   api.post<UnsubscribeResponse>(`/unsubscribe/${token}`).then((r) => r.data)
 
-/** Estrae un messaggio d'errore leggibile da una risposta axios. */
+/** Extracts a readable error message from an axios response. */
 export const errorMessage = (err: unknown, fallback: string): string => {
   if (axios.isAxiosError(err)) {
     const detail = err.response?.data?.detail

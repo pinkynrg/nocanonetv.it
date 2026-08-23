@@ -14,8 +14,7 @@ export const SubscribePage = () => {
   const [status, setStatus] = useState<Status>('idle')
   const [message, setMessage] = useState('')
 
-  const toggle = (id: string) =>
-    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+  const toggle = (id: string) => setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -35,7 +34,7 @@ export const SubscribePage = () => {
       <div className={styles.home}>
         <Card>
           <div className={styles.stack}>
-            <h1 className={styles.title}>Fatto 🎉</h1>
+            <h1 className={styles.title}>Fatto!</h1>
             <p className={styles.lead}>{message}</p>
             <p className={styles.muted}>Controlla la tua email: ti abbiamo scritto cosa fare.</p>
           </div>

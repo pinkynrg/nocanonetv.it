@@ -1,9 +1,9 @@
-"""Costruzione delle email a partire da template su file.
+"""Builds the emails from file templates.
 
-I template vivono in questa cartella come file .html e .txt. I segnaposto
-usano la sintassi {{nome}} (compatibile con i merge tag di BeeFree): puoi
-rigenerare gli .html con BeeFree mantenendo gli stessi {{tag}} e il backend
-continuerà a funzionare senza modifiche. Vedi README.md in questa cartella.
+Templates live in this folder as .html and .txt files. Placeholders use the
+{{name}} syntax (compatible with BeeFree merge tags): you can regenerate the
+.html with BeeFree keeping the same {{tag}}s and the backend keeps working with
+no changes. See README.md in this folder.
 """
 from __future__ import annotations
 
@@ -14,13 +14,13 @@ from server.config import settings
 from server.email_sender import EmailMessage
 from server.models import ReminderEvent, Subscriber
 
-# Versione del testo mostrato all'utente. Va incrementata a ogni modifica
-# sostanziale: viene salvata insieme a ogni attestazione come traccia
-# probatoria (chi ha accettato ESATTAMENTE cosa). Vedi brief 5.b.
+# Version of the text shown to the user. Bump on any substantial change: it is
+# stored with every attestation as an evidence trail (who accepted EXACTLY
+# what). See brief 5.b.
 TEXT_VERSION = "v1"
 
-# Canale UFFICIALE dell'Agenzia delle Entrate. nocanonetv.it NON raccoglie mai la
-# dichiarazione né la trasmette: rimanda sempre qui. Vedi brief 8.1.
+# OFFICIAL Agenzia delle Entrate channel. nocanonetv.it NEVER collects nor
+# transmits the declaration: always link here. See brief 8.1.
 OFFICIAL_ADE_URL = (
     "https://www.agenziaentrate.gov.it/portale/it/web/guest/schede/"
     "agevolazioni/canone-tv/dichiarazione-sostitutiva-canone-tv-cittadini"
@@ -50,7 +50,7 @@ def _render(template_name: str, context: dict[str, str]) -> str:
 
 def build_welcome(subscriber: Subscriber) -> EmailMessage:
     if has_yearly(subscriber.cases):
-        # Almeno un caso di non detenzione: promemoria annuale attivo.
+        # At least one non-detention case: yearly reminder is active.
         context = {
             "name": subscriber.name,
             "official_url": OFFICIAL_ADE_URL,
@@ -62,8 +62,8 @@ def build_welcome(subscriber: Subscriber) -> EmailMessage:
             html=_render("welcome.html", context),
             text=_render("welcome.txt", context),
         )
-    # Solo casi una tantum: nessun promemoria annuale, solo la guida iniziale,
-    # con il link ufficiale specifico del caso scelto.
+    # One-off cases only: no yearly reminder, just the initial guide, with the
+    # official link specific to the chosen case.
     context = {
         "name": subscriber.name,
         "official_url": doc_url_for(subscriber.cases, OFFICIAL_ADE_URL),

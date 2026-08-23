@@ -1,4 +1,4 @@
-name: Deploy
+name: Build & push images
 
 on:
   workflow_dispatch:
@@ -7,76 +7,32 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build & push images
     runs-on: ubuntu-latest
-
+    env:
+      REGISTRY_NAME: pinkynrg
+      PROJECT_NAME: nocanonetv
+      IMAGE_TAG: ${{ github.sha }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Building Docker image for frontend
-        id: frontend
-        env:
-          REGISTRY_NAME: ${{ secrets.DOCKER_REGISTRY_NAME }}
-          REPOSITORY_NAME: ${{ secrets.PROJECT_NAME }}-frontend
-          IMAGE_TAG: ${{ github.sha }}
-          DOCKER_HUB_LOGIN_TOKEN: ${{ secrets.DOCKER_HUB_LOGIN_TOKEN }}
+      - name: Docker Hub login
+        run: echo "${{ secrets.DOCKER_HUB_LOGIN_TOKEN }}" | docker login -u "$REGISTRY_NAME" --password-stdin
+
+      - name: Build & push backend
         run: |
-          docker build -f Dockerfile.frontend -t $REGISTRY_NAME/$REPOSITORY_NAME:$IMAGE_TAG -t $REGISTRY_NAME/$REPOSITORY_NAME:latest .
-          echo "Pushing image to Registry..."
-          docker login -u $REGISTRY_NAME -p $DOCKERHUB_LOGIN_TOKEN
-          docker push $REGISTRY_NAME/$REPOSITORY_NAME:$IMAGE_TAG
-          docker push $REGISTRY_NAME/$REPOSITORY_NAME:latest
-          echo "::set-output name=image::$REGISTRY_NAME/$REPOSITORY_NAME:$IMAGE_TAG"
+          IMG="$REGISTRY_NAME/$PROJECT_NAME-backend"
+          docker build -f Dockerfile.backend -t "$IMG:$IMAGE_TAG" -t "$IMG:latest" .
+          docker push "$IMG:$IMAGE_TAG"
+          docker push "$IMG:latest"
 
-      - name: Building Docker image for backend
-        id: backend
-        env:
-          REGISTRY_NAME: ${{ secrets.DOCKER_REGISTRY_NAME }}
-          REPOSITORY_NAME: ${{ secrets.PROJECT_NAME }}-backend
-          IMAGE_TAG: ${{ github.sha }}
-          DOCKER_HUB_LOGIN_TOKEN: ${{ secrets.DOCKER_HUB_LOGIN_TOKEN }}
+      - name: Build & push frontend
         run: |
-          docker build -f Dockerfile.backend -t $REGISTRY_NAME/$REPOSITORY_NAME:$IMAGE_TAG -t $REGISTRY_NAME/$REPOSITORY_NAME:latest .
-          echo "Pushing image to Registry..."
-          docker login -u $REGISTRY_NAME -p $DOCKERHUB_LOGIN_TOKEN
-          docker push $REGISTRY_NAME/$REPOSITORY_NAME:$IMAGE_TAG
-          docker push $REGISTRY_NAME/$REPOSITORY_NAME:latest
-          echo "::set-output name=image::$REGISTRY_NAME/$REPOSITORY_NAME:$IMAGE_TAG"
-    
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build
+          IMG="$REGISTRY_NAME/$PROJECT_NAME-frontend"
+          docker build -f Dockerfile.frontend -t "$IMG:$IMAGE_TAG" -t "$IMG:latest" .
+          docker push "$IMG:$IMAGE_TAG"
+          docker push "$IMG:latest"
 
-    steps:
-      
-      - name: Copy docker-compose.yml into host machine
-        uses: actions/checkout@v2
-
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "docker-compose.yml"
-          target: "~/${{ github.event.repository.name }}"
-
-      - name: Executing Docker Compose
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd ${{ github.event.repository.name }}
-            export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-            export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-            export POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-            docker compose down 
-            docker image prune -f
-            docker compose pull
-            docker compose up -d
+      # Deploy is manual: pull the new :latest images from Portainer on the host
+      # when needed. This workflow only builds and publishes them.

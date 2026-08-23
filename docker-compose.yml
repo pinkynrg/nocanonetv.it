@@ -1,3 +1,17 @@
+# Shared backend environment (backend app + cron scheduler run the same image).
+x-backend-env: &backend-env
+  POSTGRES_HOST: db
+  POSTGRES_USER: $POSTGRES_USER
+  POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+  POSTGRES_DB: $POSTGRES_DB
+  APP_BASE_URL: ${APP_BASE_URL:-https://nocanonetv.it}
+  EMAIL_BACKEND: ${EMAIL_BACKEND:-console}
+  RESEND_API_KEY: ${RESEND_API_KEY:-}
+  EMAIL_FROM: ${EMAIL_FROM:-nocanonetv.it <onboarding@resend.dev>}
+  # Italian local time: date-based deadline windows (canone.py) and the cron
+  # schedule must both use Europe/Rome. Requires tzdata (installed in the image).
+  TZ: Europe/Rome
+
 services:
   db:
     image: postgres:13
@@ -7,28 +21,36 @@ services:
       POSTGRES_DB: $POSTGRES_DB
     volumes:
       - ./db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: always
 
   backend:
-    image: ${DOCKER_REGISTRY_NAME}/${PROJECT_NAME}-backend:latest
+    image: pinkynrg/nocanonetv-backend:latest
     environment:
-      POSTGRES_HOST: db
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      POSTGRES_DB: $POSTGRES_DB
+      <<: *backend-env
+    depends_on:
+      db:
+        condition: service_healthy
     restart: always
-    ports:
-      - "8000:8000"
+
+  cron:
+    image: pinkynrg/nocanonetv-backend:latest
+    environment:
+      <<: *backend-env
+    command: ["supercronic", "/app/crontab"]
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
 
   frontend:
-    image: ${DOCKER_REGISTRY_NAME}/${PROJECT_NAME}-frontend:latest
-    restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    image: pinkynrg/nocanonetv-frontend:latest
     depends_on:
       - backend
-    networks:
-      - external_network
-
-networks:
-  external_network:
-    external: true
+    ports:
+      - "80:80"
+    restart: always

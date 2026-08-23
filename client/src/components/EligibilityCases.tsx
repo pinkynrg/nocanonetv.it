@@ -10,7 +10,7 @@ export interface CaseInfo {
 }
 
 const ICONS: Record<string, JSX.Element> = {
-  // TV sbarrata (non detenzione)
+  // crossed-out TV (non-detention)
   non_detenzione: (
     <>
       <path d="M8 7l4-4 4 4" />
@@ -18,14 +18,14 @@ const ICONS: Record<string, JSX.Element> = {
       <line x1="4" y1="21" x2="20" y2="4" />
     </>
   ),
-  // persona (over 75)
+  // person (over 75)
   over75: (
     <>
       <circle cx="12" cy="7" r="4" />
       <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
     </>
   ),
-  // globo (diplomatici / militari stranieri)
+  // globe (foreign diplomats / military)
   diplomat: (
     <>
       <circle cx="12" cy="12" r="9" />

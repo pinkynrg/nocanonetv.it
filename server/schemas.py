@@ -10,7 +10,7 @@ from server.cases import normalize
 class SubscribeRequest(BaseModel):
     name: str = Field(min_length=1, max_length=120)
     email: EmailStr
-    # Casi di esonero selezionati (almeno uno valido).
+    # Selected exemption cases (at least one valid).
     cases: list[str] = Field(min_length=1)
 
     @field_validator("name")

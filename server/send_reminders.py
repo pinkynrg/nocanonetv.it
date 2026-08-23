@@ -1,17 +1,17 @@
-"""Invia il promemoria annuale del canone TV agli iscritti attivi.
+"""Send the yearly TV licence reminder to active subscribers.
 
-Non è un daemon: lo si lancia a mano (o via cron) nella finestra utile,
-tipicamente a dicembre per l'esonero dell'intero anno successivo.
+Not a daemon: run it by hand (or via cron) inside the useful window, typically
+in December for the next full year's exemption.
 
-Esempi (dalla root del repo):
+Examples (from the repo root):
 
-    # anteprima a schermo, nessun invio reale
+    # preview to stdout, no real send
     PYTHONPATH=$(pwd) uv run --project server python -m server.send_reminders --dry-run
 
-    # invio reale (usa EMAIL_BACKEND dalle settings, es. resend)
+    # real send (uses EMAIL_BACKEND from settings, e.g. resend)
     PYTHONPATH=$(pwd) uv run --project server python -m server.send_reminders
 
-    # simula una data / forza un anno (test)
+    # simulate a date / force a year (testing)
     PYTHONPATH=$(pwd) uv run --project server python -m server.send_reminders \
         --today 2026-12-15 --dry-run
 """
@@ -31,7 +31,7 @@ from server.emails import TEXT_VERSION, build_reminder
 from server.models import ReminderEvent, Subscriber, SubscriberStatus
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-logger = logging.getLogger("norai.send_reminders")
+logger = logging.getLogger("nocanonetv.send_reminders")
 
 
 def run(today: date, year: int, dry_run: bool, limit: int | None) -> None:
@@ -39,7 +39,7 @@ def run(today: date, year: int, dry_run: bool, limit: int | None) -> None:
 
     if not window_open(today, year):
         logger.warning(
-            "Fuori dalla finestra utile per il %s (oggi=%s). Proseguo comunque.",
+            "Outside the useful window for %s (today=%s). Proceeding anyway.",
             year,
             today.isoformat(),
         )
@@ -51,18 +51,18 @@ def run(today: date, year: int, dry_run: bool, limit: int | None) -> None:
         active = db.scalars(
             select(Subscriber).where(Subscriber.status == SubscriberStatus.active.value)
         ).all()
-        # Solo chi ha almeno un caso di non detenzione (Quadro A) va rinnovato
-        # ogni anno; i casi una tantum non ricevono il promemoria annuale.
+        # Only subscribers with at least one non-detention case (Quadro A) must
+        # re-file every year; one-off cases don't get the yearly reminder.
         active = [s for s in active if has_yearly(s.cases)]
         logger.info(
-            "Iscritti con promemoria annuale: %d | anno di riferimento: %d",
+            "Subscribers with yearly reminder: %d | reference year: %d",
             len(active),
             year,
         )
 
         for sub in active:
             if limit is not None and sent >= limit:
-                logger.info("Raggiunto --limit %d, stop.", limit)
+                logger.info("Reached --limit %d, stopping.", limit)
                 break
 
             existing = db.scalar(
@@ -78,21 +78,21 @@ def run(today: date, year: int, dry_run: bool, limit: int | None) -> None:
                 subscriber_id=sub.id, year=year, text_version=TEXT_VERSION
             )
             db.add(event)
-            db.flush()  # genera token e sent_at prima di costruire l'email
+            db.flush()  # generate token and sent_at before building the email
 
             try:
                 sender.send(build_reminder(sub, event, note))
             except Exception:
-                db.rollback()  # non registrare l'evento se l'invio è fallito
+                db.rollback()  # don't record the event if the send failed
                 failed += 1
-                logger.exception("Invio fallito per %s", sub.email)
+                logger.exception("Send failed for %s", sub.email)
                 continue
 
             db.commit()
             sent += 1
 
         logger.info(
-            "Fatto. Inviati: %d | già inviati quest'anno: %d | falliti: %d",
+            "Done. Sent: %d | already sent this year: %d | failed: %d",
             sent,
             already,
             failed,
@@ -102,26 +102,26 @@ def run(today: date, year: int, dry_run: bool, limit: int | None) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Invia i promemoria del canone TV.")
+    parser = argparse.ArgumentParser(description="Send the TV licence reminders.")
     parser.add_argument(
         "--today",
         type=date.fromisoformat,
         default=None,
-        help="Sovrascrive la data odierna (YYYY-MM-DD), per test.",
+        help="Override today's date (YYYY-MM-DD), for testing.",
     )
     parser.add_argument(
         "--year",
         type=int,
         default=None,
-        help="Forza l'anno di dichiarazione (default: calcolato dalla finestra).",
+        help="Force the declaration year (default: computed from the window).",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Stampa le email a schermo senza inviarle (forza backend console).",
+        help="Print the emails to stdout without sending (forces the console backend).",
     )
     parser.add_argument(
-        "--limit", type=int, default=None, help="Invia al massimo N promemoria."
+        "--limit", type=int, default=None, help="Send at most N reminders."
     )
     args = parser.parse_args()
 

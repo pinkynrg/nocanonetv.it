@@ -20,7 +20,7 @@ from server.schemas import (
     UnsubscribeResponse,
 )
 
-logger = logging.getLogger("norai.routes")
+logger = logging.getLogger("nocanonetv.routes")
 
 router = APIRouter(prefix="/api")
 
@@ -48,7 +48,7 @@ def subscribe(payload: SubscribeRequest, request: Request, db: Session = Depends
         subscriber = Subscriber(name=payload.name, email=email)
         db.add(subscriber)
 
-    # Iscrizione o ri-attivazione: aggiorna sempre la traccia dell'autocertificazione.
+    # Signup or re-activation: always refresh the self-declaration trace.
     subscriber.name = payload.name
     subscriber.status = SubscriberStatus.active.value
     subscriber.initial_attestation = True
@@ -62,8 +62,8 @@ def subscribe(payload: SubscribeRequest, request: Request, db: Session = Depends
 
     try:
         get_email_sender().send(build_welcome(subscriber))
-    except Exception:  # l'iscrizione resta valida anche se l'email fallisce
-        logger.exception("Invio email di benvenuto fallito per %s", subscriber.email)
+    except Exception:  # signup stays valid even if the email fails
+        logger.exception("Welcome email send failed for %s", subscriber.email)
 
     return SubscribeResponse(
         ok=True,
@@ -96,7 +96,7 @@ def reminder_respond(
     if event is None:
         raise HTTPException(status_code=404, detail="Promemoria non trovato.")
 
-    # Traccia probatoria della ri-attestazione attiva (ultima risposta vince).
+    # Evidence trail of the active re-attestation (last response wins).
     event.response = payload.response
     event.responded_at = datetime.now(UTC)
     event.responded_ip = _client_ip(request)
@@ -104,7 +104,7 @@ def reminder_respond(
 
     subscriber = event.subscriber
     if payload.response == ReminderResponse.now_has_tv.value:
-        # Cambio di stato: uscita guidata, niente più promemoria.
+        # State change: guided exit, no more reminders.
         subscriber.status = SubscriberStatus.exited.value
         message = (
             "Grazie per averlo detto. Dato che ora possiedi un apparecchio TV non devi "

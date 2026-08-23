@@ -1,22 +1,40 @@
-# Use an official Python runtime as a parent image
+# Backend FastAPI (uv, Python 3.12)
 FROM python:3.12-slim
 
-# Set environment variables to ensure the Python output is sent straight to the terminal without buffering
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=server
+# La root del progetto è /app: mette il pacchetto `server` sul path (come in locale).
+ENV PYTHONPATH=/app
 
-# Install uv
+WORKDIR /app
+
+# uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Copy the current directory contents into the container at /app
+# Codice del backend
 COPY ./server ./server
 
-# Install project dependencies
+# Dipendenze (crea /app/server/.venv)
 RUN cd server && uv sync --frozen
 
-# Expose the port that your FastAPI app runs on
+# supercronic: container-friendly cron for the reminder scheduler (used by the
+# `cron` service in docker-compose; the backend service ignores it). tzdata lets
+# the crontab honour TZ=Europe/Rome.
+ENV SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.49/supercronic-linux-amd64 \
+    SUPERCRONIC_SHA1SUM=e63c11a9726b775a6a11801e81af4f3fb926aa68 \
+    SUPERCRONIC=supercronic-linux-amd64
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl tzdata \
+ && rm -rf /var/lib/apt/lists/* \
+ && curl -fsSLO "$SUPERCRONIC_URL" \
+ && echo "${SUPERCRONIC_SHA1SUM}  ${SUPERCRONIC}" | sha1sum -c - \
+ && chmod +x "$SUPERCRONIC" \
+ && mv "$SUPERCRONIC" /usr/local/bin/supercronic
+COPY ./crontab /app/crontab
+RUN supercronic -test /app/crontab
+
 EXPOSE 8000
 
-# Define the command to run your application
-CMD ["uv", "run", "--directory", "server", "uvicorn", "server.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Applica le migrazioni, poi avvia l'app. Eseguito da /app come in locale:
+#   uv run --project server ... con alembic.ini che usa script_location=server/migrations
+CMD ["sh", "-c", "uv run --no-sync --project server alembic -c server/alembic.ini upgrade head && uv run --no-sync --project server uvicorn server.app:app --host 0.0.0.0 --port 8000"]

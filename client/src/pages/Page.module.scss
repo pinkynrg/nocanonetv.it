@@ -187,3 +187,27 @@
 .fullWidth {
   width: 100%;
 }
+
+.subTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 10px 0 0;
+}
+
+.prose {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text);
+  margin: 0;
+}
+
+.proseList {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text);
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

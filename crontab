@@ -1,0 +1,14 @@
+# Yearly canone TV reminder (supercronic crontab), 09:00 Europe/Rome.
+#
+# send_reminders dedups per (subscriber, year) via ReminderEvent, so a daily run
+# is idempotent: each subscriber is emailed at most once per reference year and a
+# failed day just retries tomorrow. The wording is picked by deadline_note().
+#
+# Full-year campaign (Dec + Jan): reference year is next year, wording targets
+# the 31 January full-year exemption. Also catches subscribers who join in
+# January, in time for that deadline.
+0 9 * 12,1 * cd /app && uv run --no-sync --project server python -m server.send_reminders
+# 2nd-semester fallback (May + June): reference year is the current year, so only
+# late subscribers (who joined after the Dec/Jan send) still lack an event and get
+# reminded, with wording targeting the 30 June half-year exemption.
+0 9 * 5,6 * cd /app && uv run --no-sync --project server python -m server.send_reminders

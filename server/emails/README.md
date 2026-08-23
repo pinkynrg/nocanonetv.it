@@ -1,38 +1,38 @@
-# Template email
+# Email templates
 
-Ogni email è una coppia di file in questa cartella:
+Each email is a pair of files in this folder:
 
-| Email                                   | HTML                   | Testo (fallback)      |
-| --------------------------------------- | ---------------------- | --------------------- |
-| Benvenuto (casi "senza TV", annuale)    | `welcome.html`         | `welcome.txt`         |
-| Benvenuto (casi una tantum, guida)      | `welcome_onetime.html` | `welcome_onetime.txt` |
-| Promemoria annuale                      | `reminder.html`        | `reminder.txt`        |
+| Email                                    | HTML                   | Text (fallback)       |
+| ---------------------------------------- | ---------------------- | --------------------- |
+| Welcome ("no TV" cases, yearly)          | `welcome.html`         | `welcome.txt`         |
+| Welcome (one-off cases, guide)           | `welcome_onetime.html` | `welcome_onetime.txt` |
+| Yearly reminder                          | `reminder.html`        | `reminder.txt`        |
 
-La welcome inviata dipende dai casi scelti in iscrizione: se c'è almeno un caso di
-non detenzione (`no_tv`/`only_pc`) parte `welcome.html`; se sono tutti una tantum
-(over 75, familiare, diplomatici) parte `welcome_onetime.html`.
+Which welcome is sent depends on the cases chosen at signup: if there is at least one
+non-detention case (`non_detenzione`), `welcome.html` goes out; if they are all one-off
+(`over75`, `diplomat`), `welcome_onetime.html` goes out.
 
-Il backend (`server/emails/__init__.py`) legge il file a ogni invio e sostituisce
-i **segnaposto** `{{nome}}`. Puoi rigenerare gli `.html` con BeeFree: esporta
-l'HTML, incolla i merge tag `{{...}}` dove servono, salva col nome giusto qui.
-Nessun riavvio necessario, i file vengono riletti a ogni invio.
+The backend (`server/emails/__init__.py`) reads the file on every send and replaces the
+**placeholders** `{{name}}`. You can regenerate the `.html` with BeeFree: export the HTML,
+paste the `{{...}}` merge tags where needed, save under the right name here. No restart
+needed — files are re-read on every send.
 
-## Segnaposto disponibili
+## Available placeholders
 
-**welcome.html / welcome.txt** e **welcome_onetime.html / welcome_onetime.txt**
-- `{{name}}` — nome dell'iscritto
-- `{{official_url}}` — pagina ufficiale Agenzia delle Entrate
-- `{{unsubscribe_url}}` — link per annullare l'iscrizione
+**welcome.html / welcome.txt** and **welcome_onetime.html / welcome_onetime.txt**
+- `{{name}}` — subscriber name
+- `{{official_url}}` — official Agenzia delle Entrate page
+- `{{unsubscribe_url}}` — unsubscribe link
 
 **reminder.html / reminder.txt**
-- `{{name}}` — nome dell'iscritto
-- `{{year}}` — anno della dichiarazione
-- `{{deadline_note}}` — frase sulla scadenza (calcolata in base alla data)
-- `{{confirm_url}}` — link alla pagina di riconferma
-- `{{unsubscribe_url}}` — link per annullare l'iscrizione
-- `{{official_url}}` — pagina ufficiale Agenzia delle Entrate (usata dalla pagina di conferma)
+- `{{name}}` — subscriber name
+- `{{year}}` — declaration year
+- `{{deadline_note}}` — deadline sentence (computed from the date)
+- `{{confirm_url}}` — link to the re-confirmation page
+- `{{unsubscribe_url}}` — unsubscribe link
+- `{{official_url}}` — official Agenzia delle Entrate page (used by the confirm page)
 
-## Regole da non rompere (vedi brief)
-- Rimanda **sempre** al canale ufficiale dell'Agenzia (`{{official_url}}` / la pagina di conferma), mai a un modulo nostro.
-- Il promemoria chiede **attivamente** "sei ancora senza TV?": non dare per scontato nulla.
-- Tieni sempre un link di annullamento (`{{unsubscribe_url}}`).
+## Rules not to break (see brief)
+- **Always** point to the official Agenzia channel (`{{official_url}}` / the confirm page), never our own form.
+- The reminder **actively** asks "are you still without a TV?": never assume anything.
+- Always keep an unsubscribe link (`{{unsubscribe_url}}`).

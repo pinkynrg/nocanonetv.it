@@ -8,7 +8,7 @@ import httpx
 
 from server.config import settings
 
-logger = logging.getLogger("norai.email")
+logger = logging.getLogger("nocanonetv.email")
 
 
 @dataclass
@@ -24,7 +24,7 @@ class EmailSender(Protocol):
 
 
 class ConsoleEmailSender:
-    """Stampa l'email a schermo. Nessun invio reale (dev / dry-run)."""
+    """Prints the email to stdout. No real send (dev / dry-run)."""
 
     def send(self, message: EmailMessage) -> None:
         print("\n" + "=" * 72)
@@ -36,14 +36,14 @@ class ConsoleEmailSender:
 
 
 class ResendEmailSender:
-    """Invio reale via API Resend (https://resend.com/docs/api-reference)."""
+    """Real send via the Resend API (https://resend.com/docs/api-reference)."""
 
     API_URL = "https://api.resend.com/emails"
 
     def __init__(self, api_key: str, sender: str) -> None:
         if not api_key:
             raise RuntimeError(
-                "RESEND_API_KEY mancante: impossibile usare il backend email 'resend'."
+                "RESEND_API_KEY missing: cannot use the 'resend' email backend."
             )
         self._api_key = api_key
         self._sender = sender
@@ -62,16 +62,16 @@ class ResendEmailSender:
             timeout=15.0,
         )
         resp.raise_for_status()
-        logger.info("Email inviata a %s (id=%s)", message.to, resp.json().get("id"))
+        logger.info("Email sent to %s (id=%s)", message.to, resp.json().get("id"))
 
 
 def get_email_sender() -> EmailSender:
-    """Restituisce il sender configurato via EMAIL_BACKEND (console | resend)."""
+    """Return the sender configured via EMAIL_BACKEND (console | resend)."""
     backend = settings.email_backend.lower()
     if backend == "resend":
         return ResendEmailSender(settings.resend_api_key, settings.email_from)
     if backend == "console":
         return ConsoleEmailSender()
     raise RuntimeError(
-        f"EMAIL_BACKEND sconosciuto: {settings.email_backend!r} (usa 'console' o 'resend')."
+        f"Unknown EMAIL_BACKEND: {settings.email_backend!r} (use 'console' or 'resend')."
     )

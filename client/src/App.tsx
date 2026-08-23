@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import styles from './App.module.scss'
 import { ConfirmPage } from './pages/ConfirmPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { PrivacyPage } from './pages/PrivacyPage'
 import { SubscribePage } from './pages/SubscribePage'
 import { UnsubscribePage } from './pages/UnsubscribePage'
 
@@ -26,6 +27,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
     <footer className={styles.footer}>
       nocanonetv.it è solo un promemoria: la dichiarazione la presenti e firmi tu, sul sito
       dell'Agenzia delle Entrate.
+      <Link to="/privacy" className={styles.footerLink}>Informativa sulla privacy</Link>
     </footer>
   </div>
 )
@@ -37,6 +39,7 @@ export const App = () => (
         <Route path="/" element={<SubscribePage />} />
         <Route path="/conferma/:token" element={<ConfirmPage />} />
         <Route path="/annulla/:token" element={<UnsubscribePage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>

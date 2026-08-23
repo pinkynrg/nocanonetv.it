@@ -2,9 +2,9 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings
 
-# .env nella root del repo (server/config.py -> parent.parent). Percorso assoluto
-# così le settings si caricano a prescindere dalla cwd (uvicorn con --directory
-# server, script di invio lanciati da root, ecc.).
+# .env at the repo root (server/config.py -> parent.parent). Absolute path so
+# settings load regardless of the cwd (uvicorn with --directory server, sender
+# scripts launched from the root, etc.).
 ENV_FILE = str(Path(__file__).resolve().parent.parent / ".env")
 
 class Settings(BaseSettings):
@@ -13,17 +13,17 @@ class Settings(BaseSettings):
     postgres_host: str = "127.0.0.1"
     postgres_db: str = "db"
 
-    # Base URL del frontend, usato per costruire i link nelle email
-    # (conferma / uscita / annullamento). In produzione: https://nocanonetv.it
+    # Frontend base URL, used to build the links in the emails
+    # (confirm / exit / unsubscribe). In production: https://nocanonetv.it
     app_base_url: str = "http://localhost:5173"
 
-    # Invio email. "console" stampa a schermo (dev, nessun provider);
-    # "resend" invia davvero via API Resend.
+    # Email sending. "console" prints to stdout (dev, no provider);
+    # "resend" actually sends via the Resend API.
     email_backend: str = "console"
     resend_api_key: str = ""
-    # Mittente. Con backend sandbox di Resend usare onboarding@resend.dev
-    # (invia solo al proprietario dell'account). Dopo aver verificato il
-    # dominio nocanonetv.it -> "nocanonetv.it <noreply@nocanonetv.it>".
+    # Sender. With the Resend sandbox use onboarding@resend.dev (only delivers to
+    # the account owner). After verifying the nocanonetv.it domain ->
+    # "nocanonetv.it <noreply@nocanonetv.it>".
     email_from: str = "nocanonetv.it <onboarding@resend.dev>"
 
     @property

@@ -1,22 +1,31 @@
 # nocanonetv.it
 
-Promemoria per la dichiarazione di non detenzione del canone TV, più gli altri casi di esonero.
+Reminder for the Italian TV licence ("canone TV") non-detention declaration, plus the other exemption cases.
+
+## Language
+- **Code, comments, docstrings, logs, commit messages and docs: always English.**
+- **User-facing app copy stays Italian** (site text, emails, API messages shown to users, route slugs like `/conferma` `/annulla`) — the audience is Italian.
 
 ## Commit & PR
-- Messaggi di commit: **one-liner**, descrivono cosa fa il commit.
-- **Non firmare mai** commit, PR, issue o altro: niente `Co-Authored-By`, niente footer "Generated with…", nessuna firma o menzione di Claude/AI di alcun tipo.
+- Commit messages: **one-liner**, describing what the commit does.
+- **Never sign** commits, PRs, issues or anything else: no `Co-Authored-By`, no "Generated with…" footer, no mention of Claude/AI.
 
 ## Stack
-- **Backend** (`server/`): FastAPI + SQLAlchemy + Alembic + Postgres. Gestito con `uv`, Python 3.12.
-- **Frontend** (`client/`): React + Vite + TypeScript, styling con **SCSS modules** (`*.module.scss`).
-- **Email**: template su file in `server/emails/` (`.html` + `.txt`, segnaposto `{{...}}` compatibili BeeFree). Backend di invio configurabile via `EMAIL_BACKEND` (`console` | `resend`).
+- **Backend** (`server/`): FastAPI + SQLAlchemy + Alembic + Postgres. Managed with `uv`, Python 3.12.
+- **Frontend** (`client/`): React + Vite + TypeScript, styling with **SCSS modules** (`*.module.scss`).
+- **Email**: file templates in `server/emails/` (`.html` + `.txt`, `{{...}}` placeholders, BeeFree-compatible). Send backend via `EMAIL_BACKEND` (`console` | `resend`).
 
-## Modello prodotto
-- Solo promemoria: l'utente presenta e firma **sempre lui** la dichiarazione sul sito ufficiale dell'Agenzia delle Entrate. Rimandare sempre al canale ufficiale, mai a un modulo nostro.
-- 3 casi di esonero (`server/cases.py`): `non_detenzione` (annuale → promemoria), `over75` e `diplomat` (una tantum → solo guida iniziale).
+## Product model
+- Reminder only: the user always files and signs the declaration themselves on the official Agenzia delle Entrate site. Always link the official channel, never our own form.
+- 3 exemption cases (`server/cases.py`): `non_detenzione` (yearly → reminder), `over75` and `diplomat` (one-off → initial guidance only).
 
-## Comandi
-- `make start` — frontend + backend + db insieme.
-- `make migrate` — applica le migrazioni Alembic.
-- `make make_migrations name=<nome>` — genera una migrazione.
-- `make send_reminders args="--dry-run"` — invio promemoria (window-aware, non un daemon).
+## Commands
+- `make start` — frontend + backend + db together.
+- `make migrate` — apply Alembic migrations.
+- `make make_migrations name=<name>` — generate a migration.
+- `make send_reminders args="--dry-run"` — send reminders (window-aware, not a daemon).
+
+## Scheduling
+- In production the `cron` service in `docker-compose.yml` runs the backend image under **supercronic** (`TZ=Europe/Rome`) with the schedule in `crontab`: months `12,1` (full-year, 31 Jan deadline) and `5,6` (2nd-semester fallback, 30 Jun deadline).
+- `send_reminders` dedups per `(subscriber, year)`, so daily runs are idempotent (one email per subscriber per reference year; failed day retries next). The message text is chosen by `deadline_note()` in `server/canone.py`.
+- supercronic binary is pinned by version + SHA1 in `Dockerfile.backend` (amd64); `RUN supercronic -test /app/crontab` validates the crontab at build time.
