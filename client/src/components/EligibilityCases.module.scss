@@ -37,6 +37,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-height: 340px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -65,7 +66,7 @@
 }
 
 .toggleBtn {
-  margin-top: 4px;
+  margin-top: auto;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--brand);
@@ -87,16 +88,29 @@
   outline-offset: 2px;
 }
 
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 .icon {
   display: inline-flex;
   color: var(--brand);
   line-height: 0;
+  flex-shrink: 0;
 }
 
 .cardTitle {
+  flex: 1;
+  min-width: 0;
   font-size: 15px;
   font-weight: 700;
-  margin: 2px 0 0;
+  line-height: 1.25;
+  // Reserve two lines so all card headers line up (harmony), even when the
+  // title fits on one line.
+  min-height: 2.5em;
+  margin: 0;
 }
 
 .lead {
@@ -109,11 +123,12 @@
 
 .pointsLead {
   margin: 0;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .inlineLink {
@@ -131,7 +146,6 @@
   font-size: 12.5px;
   line-height: 1.4;
   color: #57534e;
-  flex: 1;
 
   li::marker {
     color: var(--muted);
@@ -148,6 +162,7 @@
 
 .meta {
   margin: 0;
+  padding-left: 18px;
   font-size: 11.5px;
   font-weight: 600;
   color: var(--muted);
@@ -155,6 +170,7 @@
 
 .metaLink {
   align-self: flex-start;
+  padding-left: 18px;
   font-size: 11.5px;
   font-weight: 600;
   color: var(--brand);
@@ -163,17 +179,18 @@
 }
 
 .docChip {
-  align-self: flex-start;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--brand);
   background: #e0e8f6;
   border: 1px solid #c7d5ee;
   border-radius: 999px;
-  padding: 5px 12px;
+  padding: 4px 9px;
   text-decoration: none;
+  white-space: nowrap;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
   &:hover {

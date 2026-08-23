@@ -16,17 +16,17 @@ export const SubscribePage = () => {
   const [errors, setErrors] = useState<string[]>([])
   const [errorNonce, setErrorNonce] = useState(0)
 
-  const toggle = (id: string) => setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+  // Single selection: picking a case replaces any previous one.
+  const select = (id: string) => setSelected([id])
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
     // Validate one step at a time, in order: case, name, email.
     let firstError = ''
-    if (selected.length === 0) firstError = 'Seleziona almeno un caso di esonero qui sopra.'
+    if (selected.length === 0) firstError = 'Seleziona un caso di esonero qui sopra.'
     else if (name.trim() === '') firstError = 'Inserisci il tuo nome.'
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
-      firstError = 'Inserisci un indirizzo email valido.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) firstError = 'Inserisci un indirizzo email valido.'
     if (firstError) {
       setErrors([firstError])
       setErrorNonce((n) => n + 1)
@@ -61,10 +61,15 @@ export const SubscribePage = () => {
   return (
     <div className={styles.home}>
       <div className={styles.hero}>
-        <h1 className={styles.title}>Se hai i requisiti, il canone RAI non lo paghi</h1>
+        <h1 className={styles.title}>
+          Il promemoria per l&apos;esonero dal canone RAI.
+        </h1>
+        <p className={styles.lead}>
+          Il canone RAI costa <u>90 € l&apos;anno</u>. Se ne hai diritto, non lo paghi.
+        </p>
       </div>
 
-      <EligibilityCases selected={selected} onToggle={toggle} />
+      <EligibilityCases selected={selected} onSelect={select} />
 
       <div className={styles.formCard}>
         <form onSubmit={onSubmit} noValidate>

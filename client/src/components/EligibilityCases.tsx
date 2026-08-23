@@ -60,7 +60,7 @@ export const CASES: CaseInfo[] = [
   {
     id: 'non_detenzione',
     title: 'Non detieni una TV',
-    lead: 'Servono tutte queste:',
+    lead: 'Servono tutte queste condizioni:',
     points: [
       'Sei l\'intestatario dell\'utenza elettrica residenziale.',
       <>
@@ -79,7 +79,7 @@ export const CASES: CaseInfo[] = [
   {
     id: 'over75',
     title: 'Hai più di 75 anni',
-    lead: 'Servono tutte queste:',
+    lead: 'Servono tutte queste condizioni:',
     points: [
       'Sei l\'intestatario dell\'utenza elettrica residenziale.',
       'Hai compiuto 75 anni.',
@@ -94,12 +94,13 @@ export const CASES: CaseInfo[] = [
   {
     id: 'diplomat',
     title: 'Diplomatico o militare straniero',
-    lead: 'Servono tutte queste:',
+    lead: 'Servono tutte queste condizioni:',
     points: [
       'Sei l\'intestatario dell\'utenza elettrica residenziale.',
       'Rientri in una di queste categorie: agente diplomatico o consolare; funzionario di un\'organizzazione internazionale; militare o personale civile straniero delle forze NATO in Italia.',
     ],
-    tag: 'Esente per legge',
+    tag: 'Una tantum · nessun rinnovo',
+    metaHref: '/faq#ogni-quanto',
     docUrl:
       'https://www.agenziaentrate.gov.it/portale/web/guest/aree-tematiche/canone-tv/casi-di-esonero/diplomatici-e-militari-stranieri',
   },
@@ -107,13 +108,13 @@ export const CASES: CaseInfo[] = [
 
 interface Props {
   selected: string[]
-  onToggle: (id: string) => void
+  onSelect: (id: string) => void
 }
 
-export const EligibilityCases = ({ selected, onToggle }: Props) => (
+export const EligibilityCases = ({ selected, onSelect }: Props) => (
   <section className={styles.section}>
-    <h2 className={styles.heading}>Seleziona uno o più casi</h2>
-    <p className={styles.sub}>Tocca quelli che ti riguardano, poi iscriviti qui sotto.</p>
+    <h2 className={styles.heading}>Seleziona il tuo caso</h2>
+    <p className={styles.sub}>Tocca quello che ti riguarda, poi iscriviti qui sotto.</p>
     <div className={styles.grid}>
       {CASES.map((c) => {
         const on = selected.includes(c.id)
@@ -123,15 +124,34 @@ export const EligibilityCases = ({ selected, onToggle }: Props) => (
             className={on ? `${styles.card} ${styles.selected}` : styles.card}
           >
             <input
-              type="checkbox"
+              type="radio"
+              name="eligibility-case"
               className={styles.checkbox}
               checked={on}
-              onChange={() => onToggle(c.id)}
+              onChange={() => onSelect(c.id)}
             />
-            <span className={styles.icon}>
-              <CaseIcon id={c.id} />
-            </span>
-            <h3 className={styles.cardTitle}>{c.title}</h3>
+            <div className={styles.cardHead}>
+              <span className={styles.icon}>
+                <CaseIcon id={c.id} />
+              </span>
+              <h3 className={styles.cardTitle}>{c.title}</h3>
+              <a
+                className={styles.docChip}
+                href={c.docUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Documentazione ufficiale"
+                onClick={(e) => e.stopPropagation()}
+              >
+                Doc ↗
+              </a>
+            </div>
+            <p className={styles.pointsLead}>{c.lead}</p>
+            <ul className={styles.points}>
+              {c.points.map((p, i) => (
+                <li key={i}>{p}</li>
+              ))}
+            </ul>
             {c.metaHref ? (
               <Link
                 to={c.metaHref}
@@ -143,23 +163,6 @@ export const EligibilityCases = ({ selected, onToggle }: Props) => (
             ) : (
               <p className={styles.meta}>{c.tag}</p>
             )}
-            <p className={styles.pointsLead}>{c.lead}</p>
-            <ul className={styles.points}>
-              {c.points.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-            <div className={styles.cardFoot}>
-              <a
-                className={styles.docChip}
-                href={c.docUrl}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-              >
-                Documentazione ufficiale ↗
-              </a>
-            </div>
             <span className={styles.toggleBtn} aria-hidden="true">
               {on ? '✓ Selezionato' : 'Seleziona questo caso'}
             </span>

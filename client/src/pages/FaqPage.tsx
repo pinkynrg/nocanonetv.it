@@ -135,6 +135,18 @@ const FAQS: QA[] = [
       </>
     ),
   },
+  {
+    id: 'perche',
+    q: 'Perché esiste nocanonetv.it?',
+    a: (
+      <>
+        L’ho creato per me. Mi sono sempre scordato di presentare la dichiarazione di non
+        detenzione, tranne un anno. A casa ho solo un proiettore senza sintonizzatore, quindi
+        ne ho diritto: da qui in poi voglio ricordarmene. Ho fatto questo sito per me stesso e
+        spero che possa servire anche a te.
+      </>
+    ),
+  },
 ]
 
 export const FaqPage = () => {
