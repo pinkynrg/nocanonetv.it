@@ -4,10 +4,13 @@ import styles from './Page.module.scss'
 
 // User-facing copy stays Italian (see CLAUDE.md). This page is informational
 // only: nocanonetv.it never files the declaration for the user.
+// `text` is the plain-text answer used for the FAQPage structured data (JSON-LD);
+// keep it in sync with the visible `a`.
 interface QA {
   id: string
   q: string
   a: ReactNode
+  text: string
 }
 
 const OFFICIAL_URL =
@@ -24,6 +27,7 @@ const FAQS: QA[] = [
         residenziale.
       </>
     ),
+    text: "È l'imposta annuale sul possesso di un apparecchio televisivo. Si paga a rate nella bolletta dell'elettricità di chi ha un'utenza residenziale.",
   },
   {
     id: 'chi-esonerato',
@@ -36,6 +40,7 @@ const FAQS: QA[] = [
         esatti di ogni caso sono spiegati nella home, con il link alla pagina ufficiale.
       </>
     ),
+    text: 'Tre casi principali: chi non detiene alcun televisore, chi ha più di 75 anni con reddito basso, e i diplomatici o militari stranieri di stanza in Italia.',
   },
   {
     id: 'dichiarazione',
@@ -47,6 +52,7 @@ const FAQS: QA[] = [
         bolletta.
       </>
     ),
+    text: "È l'autocertificazione con cui dichiari di non possedere una TV in nessuna delle abitazioni della tua famiglia anagrafica. Serve a non farti addebitare il canone in bolletta.",
   },
   {
     id: 'ogni-quanto',
@@ -58,6 +64,7 @@ const FAQS: QA[] = [
         tantum.
       </>
     ),
+    text: 'Per la non detenzione vale un solo anno e va ripresentata ogni anno finché la condizione resta valida. Gli altri casi (over 75, diplomatici) sono una tantum.',
   },
   {
     id: 'scadenze',
@@ -69,6 +76,7 @@ const FAQS: QA[] = [
         (luglio-dicembre). La finestra si apre dal 1° luglio dell’anno precedente.
       </>
     ),
+    text: "Presentata entro il 31 gennaio vale per tutto l'anno. Tra il 1° febbraio e il 30 giugno vale solo per il secondo semestre (luglio-dicembre). La finestra si apre dal 1° luglio dell'anno precedente.",
   },
   {
     id: 'televisore',
@@ -93,6 +101,7 @@ const FAQS: QA[] = [
         apparecchio con sintonizzatore (altrimenti la dichiarazione è falsa).
       </>
     ),
+    text: "Conta la presenza di un sintonizzatore per ricevere il segnale TV (digitale terrestre o satellitare), integrato o tramite decoder. Il criterio è il sintonizzatore, non l'antenna: staccarla non basta e una smart TV conta anche se scollegata. Non contano PC, tablet, smartphone, monitor e proiettori senza sintonizzatore, comprese alcune TV senza sintonizzatore vendute apposta. Su un televisore il sintonizzatore si può far rimuovere da un tecnico con certificazione, così diventa un monitor non soggetto al canone.",
   },
   {
     id: 'cosa-facciamo',
@@ -104,6 +113,7 @@ const FAQS: QA[] = [
         ti ricordiamo di farlo nella finestra utile.
       </>
     ),
+    text: "Solo un promemoria. Non compiliamo né inviamo la dichiarazione al posto tuo: la presenti e la firmi tu sul canale ufficiale dell'Agenzia delle Entrate.",
   },
   {
     id: 'come-presentare',
@@ -118,11 +128,13 @@ const FAQS: QA[] = [
         raccomandata/PEC.
       </>
     ),
+    text: "Sul sito ufficiale dell'Agenzia delle Entrate. Si può inviare online con SPID/CIE, tramite intermediario, o per raccomandata/PEC.",
   },
   {
     id: 'gratuito',
     q: 'Il servizio è gratuito?',
     a: <>Sì. nocanonetv.it è un promemoria gratuito. L’unico canale ufficiale resta l’Agenzia delle Entrate.</>,
+    text: "Sì. nocanonetv.it è un promemoria gratuito. L'unico canale ufficiale resta l'Agenzia delle Entrate.",
   },
   {
     id: 'annullare',
@@ -134,6 +146,7 @@ const FAQS: QA[] = [
         <Link to="/privacy">informativa sulla privacy</Link>.
       </>
     ),
+    text: 'Dal link di annullamento presente in fondo a ogni email che ti inviamo. I tuoi dati vengono rimossi dagli invii.',
   },
   {
     id: 'perche',
@@ -146,8 +159,19 @@ const FAQS: QA[] = [
         spero che possa servire anche a te.
       </>
     ),
+    text: "L'ho creato per me: mi sono sempre scordato di presentare la dichiarazione, tranne un anno. A casa ho solo un proiettore senza sintonizzatore, quindi ne ho diritto e da qui in poi voglio ricordarmene. Spero possa servire anche ad altri.",
   },
 ]
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQS.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.text },
+  })),
+}
 
 export const FaqPage = () => {
   const location = useLocation()
@@ -170,6 +194,10 @@ export const FaqPage = () => {
 
   return (
     <div className={styles.faq}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className={styles.faqHead}>
         <h1 className={styles.title}>Domande frequenti</h1>
         <p className={styles.lead}>
