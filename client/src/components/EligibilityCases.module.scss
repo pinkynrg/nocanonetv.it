@@ -55,22 +55,24 @@
   flex-direction: column;
   gap: 6px;
   min-height: 340px;
-  overflow: hidden;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: 0 0 0 1px var(--border);
   padding: 16px;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease;
 
   &:hover {
-    border-color: #d6d3d1;
+    box-shadow: 0 0 0 1px #d6d3d1;
   }
 }
 
 .selected {
-  border-color: var(--brand);
-  box-shadow: 0 0 0 1px var(--brand);
+  box-shadow: 0 0 0 2px var(--brand);
+
+  &:hover {
+    box-shadow: 0 0 0 2px var(--brand);
+  }
 }
 
 // native checkbox hidden but accessible
@@ -111,13 +113,13 @@
   gap: 8px;
   margin: -16px -16px 6px;
   padding: 12px 16px;
-  background: var(--brand-soft);
-  border-bottom: 1px solid var(--brand-border);
+  background: var(--brand-strong);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .icon {
   display: inline-flex;
-  color: var(--brand);
+  color: #ffffff;
   line-height: 0;
   flex-shrink: 0;
   align-self: center;
@@ -126,6 +128,7 @@
 .cardTitle {
   flex: 1;
   min-width: 0;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   line-height: 1.25;
@@ -210,16 +213,13 @@
   font-weight: 600;
   color: var(--brand);
   background: #fff;
-  border: 1px solid #c7d5ee;
   border-radius: 999px;
-  padding: 4px 9px;
+  padding: 5px 10px;
   text-decoration: none;
   white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: var(--brand);
-    border-color: var(--brand);
-    color: #fff;
+    background: var(--brand-soft);
   }
 }
