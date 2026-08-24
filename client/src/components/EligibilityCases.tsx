@@ -152,26 +152,28 @@ export const EligibilityCases = ({ selected, onSelect }: Props) => (
                 Doc ↗
               </a>
             </div>
-            <p className={styles.pointsLead}>{c.lead}</p>
-            <ul className={styles.points}>
-              {c.points.map((p, i) => (
-                <li key={i}>{p}</li>
-              ))}
-            </ul>
-            {c.metaHref ? (
-              <Link
-                to={c.metaHref}
-                className={styles.metaLink}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {c.tag}
-              </Link>
-            ) : (
-              <p className={styles.meta}>{c.tag}</p>
-            )}
-            <span className={styles.toggleBtn} aria-hidden="true">
-              {on ? '✓ Selezionato' : 'Seleziona questo caso'}
-            </span>
+            <div className={styles.cardBody}>
+              <p className={styles.pointsLead}>{c.lead}</p>
+              <ul className={styles.points}>
+                {c.points.map((p, i) => (
+                  <li key={i}>{p}</li>
+                ))}
+              </ul>
+              {c.metaHref ? (
+                <Link
+                  to={c.metaHref}
+                  className={styles.metaLink}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {c.tag}
+                </Link>
+              ) : (
+                <p className={styles.meta}>{c.tag}</p>
+              )}
+              <span className={styles.toggleBtn} aria-hidden="true">
+                {on ? '✓ Selezionato' : 'Seleziona questo caso'}
+              </span>
+            </div>
           </label>
         )
       })}
