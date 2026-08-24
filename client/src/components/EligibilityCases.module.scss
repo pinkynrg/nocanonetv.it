@@ -55,7 +55,7 @@
   flex-direction: column;
   min-height: 340px;
   overflow: hidden;
-  background: var(--surface);
+  background: var(--brand-strong);
   border-radius: var(--radius);
   box-shadow: 0 0 0 1px var(--border);
   cursor: pointer;
@@ -72,6 +72,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 16px;
+  background: var(--surface);
 }
 
 .selected {
