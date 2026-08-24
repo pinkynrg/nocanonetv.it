@@ -8,7 +8,7 @@ import styles from './Page.module.scss'
 // by legal before relying on it.
 export const PrivacyPage = () => (
   <Card>
-    <div className={styles.stack}>
+    <div className={styles.doc}>
       <h1 className={styles.title}>Informativa sulla privacy</h1>
       <p className={styles.muted}>Ultimo aggiornamento: 23 agosto 2026</p>
 
