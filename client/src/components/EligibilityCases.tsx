@@ -18,7 +18,7 @@ const ICONS: Record<string, JSX.Element> = {
   // crossed-out TV (non-detention)
   non_detenzione: (
     <>
-      <path d="M8 7l4-4 4 4" />
+      <path d="M8 3l4 4 4-4" />
       <rect x="3" y="7" width="18" height="12" rx="2" />
       <line x1="4" y1="21" x2="20" y2="4" />
     </>
@@ -26,8 +26,13 @@ const ICONS: Record<string, JSX.Element> = {
   // person (over 75)
   over75: (
     <>
-      <circle cx="12" cy="7" r="4" />
-      <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
+      <circle cx="9" cy="4" r="2.5" />
+      <path d="M9 6.5L9 11.5" />
+      <path d="M9 11.5L6.5 21" />
+      <path d="M9 11.5L11 21" />
+      <path d="M9 9L4.5 13" />
+      <path d="M9 9L13.5 13" />
+      <path d="M18 21L18 10a1.6 1.6 0 0 0-3 0" />
     </>
   ),
   // globe (foreign diplomats / military)
@@ -113,8 +118,9 @@ interface Props {
 
 export const EligibilityCases = ({ selected, onSelect }: Props) => (
   <section className={styles.section}>
-    <h2 className={styles.heading}>Seleziona il tuo caso</h2>
-    <p className={styles.sub}>Tocca quello che ti riguarda, poi iscriviti qui sotto.</p>
+    <h2 className={styles.heading}>
+      <span className={styles.step}>1</span>Seleziona il tuo caso
+    </h2>
     <div className={styles.grid}>
       {CASES.map((c) => {
         const on = selected.includes(c.id)

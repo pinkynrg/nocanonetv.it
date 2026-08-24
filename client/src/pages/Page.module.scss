@@ -10,7 +10,7 @@
   max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
   text-align: center;
 }
 
@@ -54,10 +54,35 @@
 }
 
 .cardHeading {
-  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 22px;
   font-weight: 700;
-  text-align: center;
+  letter-spacing: -0.5px;
   margin: 0 0 18px;
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.stepsHint {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 @media (max-width: 640px) {

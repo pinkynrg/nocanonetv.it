@@ -65,7 +65,8 @@ export const SubscribePage = () => {
           Il promemoria per l&apos;esonero dal canone RAI.
         </h1>
         <p className={styles.lead}>
-          Il canone RAI costa <u>90 € l&apos;anno</u>. Se ne hai diritto, non lo paghi.
+          Costa <strong>90 € l&apos;anno</strong>: se ne hai diritto, non lo paghi. Ti bastano
+          due passi, qui sotto.
         </p>
       </div>
 
@@ -73,7 +74,9 @@ export const SubscribePage = () => {
 
       <div className={styles.formCard}>
         <form onSubmit={onSubmit} noValidate>
-          <h2 className={styles.cardHeading}>Iscriviti al promemoria</h2>
+          <h2 className={styles.cardHeading}>
+            <span className={styles.step}>2</span>Iscriviti al promemoria
+          </h2>
 
           <div className={styles.signupRow}>
             <input
