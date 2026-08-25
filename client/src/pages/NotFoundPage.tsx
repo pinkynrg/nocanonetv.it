@@ -6,7 +6,8 @@ export const NotFoundPage = () => (
   <Card>
     <div className={styles.stack}>
       <h1 className={styles.title}>Pagina non trovata</h1>
-      <p className={styles.lead}>Il link potrebbe essere scaduto o errato.</p>
+      <p className={styles.lead}>L&apos;indirizzo che hai aperto non esiste o il link è scaduto.</p>
+      <p className={styles.error}>Errore 404: pagina non trovata.</p>
       <Link to="/">Torna alla home</Link>
     </div>
   </Card>

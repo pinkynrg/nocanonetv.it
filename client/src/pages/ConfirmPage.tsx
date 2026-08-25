@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import {
@@ -12,38 +12,30 @@ import {
 } from '../lib/api'
 import styles from './Page.module.scss'
 
-export const ConfirmPage = () => {
-  const { token = '' } = useParams()
-  const [ctx, setCtx] = useState<ReminderContext | null>(null)
-  const [loadError, setLoadError] = useState('')
-  const [result, setResult] = useState<RespondResponse | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+interface ConfirmViewProps {
+  ctx: ReminderContext | null
+  loadError: string
+  result: RespondResponse | null
+  submitting: boolean
+  onRespond: (answer: ReminderAnswer) => void
+}
 
-  useEffect(() => {
-    getReminder(token)
-      .then(setCtx)
-      .catch((err) =>
-        setLoadError(errorMessage(err, 'Promemoria non trovato o link scaduto.')),
-      )
-  }, [token])
-
-  const respond = async (answer: ReminderAnswer) => {
-    setSubmitting(true)
-    try {
-      setResult(await respondReminder(token, answer))
-    } catch (err) {
-      setLoadError(errorMessage(err, 'Non è stato possibile registrare la risposta.'))
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
+// Presentational: renders purely from props (used by the route and by /preview).
+export const ConfirmView = ({
+  ctx,
+  loadError,
+  result,
+  submitting,
+  onRespond,
+}: ConfirmViewProps) => {
   if (loadError) {
     return (
       <Card>
         <div className={styles.stack}>
           <h1 className={styles.title}>Ops</h1>
+          <p className={styles.lead}>Non riusciamo ad aprire il tuo promemoria.</p>
           <p className={styles.error}>{loadError}</p>
+          <Link to="/">Torna alla home</Link>
         </div>
       </Card>
     )
@@ -98,26 +90,56 @@ export const ConfirmPage = () => {
         )}
 
         <div className={styles.actions}>
-          <Button
-            variant="primary"
-            disabled={submitting}
-            onClick={() => respond('still_eligible')}
-          >
+          <Button variant="primary" disabled={submitting} onClick={() => onRespond('still_eligible')}>
             Sì, sono ancora senza TV
           </Button>
-          <Button
-            variant="secondary"
-            disabled={submitting}
-            onClick={() => respond('now_has_tv')}
-          >
+          <Button variant="secondary" disabled={submitting} onClick={() => onRespond('now_has_tv')}>
             No, ora ho una TV
           </Button>
         </div>
         <p className={styles.muted}>
-          Confermando, ti mandiamo al canale ufficiale dell&apos;Agenzia delle Entrate.
-          La dichiarazione la firmi e la invii tu.
+          Confermando, ti mandiamo al canale ufficiale dell&apos;Agenzia delle Entrate. La
+          dichiarazione la firmi e la invii tu.
         </p>
       </div>
     </Card>
+  )
+}
+
+// Container: owns the data fetching and passes it to ConfirmView.
+export const ConfirmPage = () => {
+  const { token = '' } = useParams()
+  const [ctx, setCtx] = useState<ReminderContext | null>(null)
+  const [loadError, setLoadError] = useState('')
+  const [result, setResult] = useState<RespondResponse | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+
+  useEffect(() => {
+    getReminder(token)
+      .then(setCtx)
+      .catch((err) =>
+        setLoadError(errorMessage(err, 'Promemoria non trovato o link scaduto.')),
+      )
+  }, [token])
+
+  const respond = async (answer: ReminderAnswer) => {
+    setSubmitting(true)
+    try {
+      setResult(await respondReminder(token, answer))
+    } catch (err) {
+      setLoadError(errorMessage(err, 'Non è stato possibile registrare la risposta.'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <ConfirmView
+      ctx={ctx}
+      loadError={loadError}
+      result={result}
+      submitting={submitting}
+      onRespond={respond}
+    />
   )
 }

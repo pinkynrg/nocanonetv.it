@@ -31,6 +31,8 @@ body,
 #root {
   margin: 0;
   min-height: 100vh;
+  // Below this the layout stops squishing and a horizontal scrollbar appears.
+  min-width: 320px;
 }
 
 #root {

@@ -6,6 +6,12 @@
   background: linear-gradient(180deg, var(--brand-soft) 0, var(--bg) 260px);
 }
 
+// Preview tiles: fill the fixed-height stage instead of the viewport.
+.shellContained {
+  min-height: 0;
+  height: 100%;
+}
+
 .header {
   padding: 14px 24px;
   display: grid;

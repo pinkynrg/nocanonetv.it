@@ -4,29 +4,18 @@ import { Card } from '../components/Card'
 import { confirmSubscription, errorMessage } from '../lib/api'
 import styles from './Page.module.scss'
 
-// Landing for the double opt-in email link: confirms the subscription on load.
-export const ConfirmSubscriptionPage = () => {
-  const { token = '' } = useParams()
-  const [status, setStatus] = useState<'loading' | 'done' | 'error'>('loading')
-  const [message, setMessage] = useState('')
-  const [officialUrl, setOfficialUrl] = useState<string | null>(null)
-  const ran = useRef(false)
+interface ConfirmSubscriptionViewProps {
+  status: 'loading' | 'done' | 'error'
+  message: string
+  officialUrl: string | null
+}
 
-  useEffect(() => {
-    if (ran.current) return // single POST (guards React StrictMode double-invoke)
-    ran.current = true
-    confirmSubscription(token)
-      .then((res) => {
-        setMessage(res.message)
-        setOfficialUrl(res.official_url)
-        setStatus('done')
-      })
-      .catch((err) => {
-        setMessage(errorMessage(err, 'Link di conferma non valido o già usato.'))
-        setStatus('error')
-      })
-  }, [token])
-
+// Presentational: renders purely from props (used by the route and by /preview).
+export const ConfirmSubscriptionView = ({
+  status,
+  message,
+  officialUrl,
+}: ConfirmSubscriptionViewProps) => {
   if (status === 'loading') {
     return (
       <Card>
@@ -40,6 +29,7 @@ export const ConfirmSubscriptionPage = () => {
       <Card>
         <div className={styles.stack}>
           <h1 className={styles.title}>Ops</h1>
+          <p className={styles.lead}>Non riusciamo a confermare la tua iscrizione.</p>
           <p className={styles.error}>{message}</p>
           <Link to="/">Torna alla home</Link>
         </div>
@@ -66,4 +56,30 @@ export const ConfirmSubscriptionPage = () => {
       </div>
     </Card>
   )
+}
+
+// Container: confirms the double opt-in on load, then renders the view.
+export const ConfirmSubscriptionPage = () => {
+  const { token = '' } = useParams()
+  const [status, setStatus] = useState<'loading' | 'done' | 'error'>('loading')
+  const [message, setMessage] = useState('')
+  const [officialUrl, setOfficialUrl] = useState<string | null>(null)
+  const ran = useRef(false)
+
+  useEffect(() => {
+    if (ran.current) return // single POST (guards React StrictMode double-invoke)
+    ran.current = true
+    confirmSubscription(token)
+      .then((res) => {
+        setMessage(res.message)
+        setOfficialUrl(res.official_url)
+        setStatus('done')
+      })
+      .catch((err) => {
+        setMessage(errorMessage(err, 'Link di conferma non valido o già usato.'))
+        setStatus('error')
+      })
+  }, [token])
+
+  return <ConfirmSubscriptionView status={status} message={message} officialUrl={officialUrl} />
 }
